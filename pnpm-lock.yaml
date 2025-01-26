@@ -8,12 +8,9 @@ importers:
 
   .:
     dependencies:
-      i18n-iso-countries:
-        specifier: ^7.13.0
-        version: 7.13.0
-      svelte-i18n:
-        specifier: ^4.0.1
-        version: 4.0.1(svelte@5.19.3)
+      easy-forms-svelte:
+        specifier: file:easy-forms-svelte-0.0.1.tgz
+        version: file:easy-forms-svelte-0.0.1.tgz(i18n-iso-countries@7.13.0)(svelte-i18n@4.0.1(svelte@5.19.3))(svelte@5.19.3)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^3.2.4
@@ -33,6 +30,9 @@ importers:
       '@storybook/addon-svelte-csf':
         specifier: ^5.0.0-next.23
         version: 5.0.0-next.23(@storybook/svelte@8.5.1(storybook@8.5.1(prettier@3.4.2))(svelte@5.19.3))(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.19.3)(vite@6.0.11(jiti@1.21.7)(yaml@2.7.0)))(storybook@8.5.1(prettier@3.4.2))(svelte@5.19.3)(vite@6.0.11(jiti@1.21.7)(yaml@2.7.0))
+      '@storybook/addon-themes':
+        specifier: ^8.5.1
+        version: 8.5.1(storybook@8.5.1(prettier@3.4.2))
       '@storybook/blocks':
         specifier: ^8.5.1
         version: 8.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.5.1(prettier@3.4.2))
@@ -75,6 +75,9 @@ importers:
       globals:
         specifier: ^15.14.0
         version: 15.14.0
+      i18n-iso-countries:
+        specifier: ^7.13.0
+        version: 7.13.0
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -96,6 +99,9 @@ importers:
       svelte-check:
         specifier: ^4.0.0
         version: 4.1.4(svelte@5.19.3)(typescript@5.7.3)
+      svelte-i18n:
+        specifier: ^4.0.1
+        version: 4.0.1(svelte@5.19.3)
       tailwindcss:
         specifier: ^3.4.17
         version: 3.4.17
@@ -721,6 +727,11 @@ packages:
       svelte: ^5.0.0
       vite: ^5.0.0 || ^6.0.0
 
+  '@storybook/addon-themes@8.5.1':
+    resolution: {integrity: sha512-xgPRznXvD95iir+mK/WMJ5QmPeiWfNcCttCNeSVsqHmSlN+5OW28N91V0tZmqDstBW5/qTd1itar23Xrpf8qKA==}
+    peerDependencies:
+      storybook: ^8.5.1
+
   '@storybook/addon-toolbars@8.5.1':
     resolution: {integrity: sha512-01Odzujfq/g9u1ZTmH/X3I9cCnsNzG/wuyhzFr/T99jerx8QG/U45iYYph2Ytw6A5AtYyCnPYmsTsI+phjUvuA==}
     peerDependencies:
@@ -1343,6 +1354,19 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
+
+  easy-forms-svelte@file:easy-forms-svelte-0.0.1.tgz:
+    resolution: {integrity: sha512-2gS7ipWPXshy93l2aVn/XKC5DKhu0yGsGkR1N+Cqdg1qCPOcX93Gujc5bJ1cRK6OHcc6Fs9OA8b/B0WKBuAltg==, tarball: file:easy-forms-svelte-0.0.1.tgz}
+    version: 0.0.1
+    peerDependencies:
+      i18n-iso-countries: ^7.0.0
+      svelte: ^5.0.0
+      svelte-i18n: ^4.0.0
+    peerDependenciesMeta:
+      i18n-iso-countries:
+        optional: true
+      svelte-i18n:
+        optional: true
 
   electron-to-chromium@1.5.88:
     resolution: {integrity: sha512-K3C2qf1o+bGzbilTDCTBhTQcMS9KW60yTAaTeeXsfvQuTDDwlokLam/AdqlqcSy9u4UainDgsHV23ksXAOgamw==}
@@ -3254,6 +3278,11 @@ snapshots:
       - babel-plugin-macros
       - storybook
 
+  '@storybook/addon-themes@8.5.1(storybook@8.5.1(prettier@3.4.2))':
+    dependencies:
+      storybook: 8.5.1(prettier@3.4.2)
+      ts-dedent: 2.2.0
+
   '@storybook/addon-toolbars@8.5.1(storybook@8.5.1(prettier@3.4.2))':
     dependencies:
       storybook: 8.5.1(prettier@3.4.2)
@@ -3961,6 +3990,13 @@ snapshots:
       gopd: 1.2.0
 
   eastasianwidth@0.2.0: {}
+
+  easy-forms-svelte@file:easy-forms-svelte-0.0.1.tgz(i18n-iso-countries@7.13.0)(svelte-i18n@4.0.1(svelte@5.19.3))(svelte@5.19.3):
+    dependencies:
+      svelte: 5.19.3
+    optionalDependencies:
+      i18n-iso-countries: 7.13.0
+      svelte-i18n: 4.0.1(svelte@5.19.3)
 
   electron-to-chromium@1.5.88: {}
 
