@@ -1,18 +1,17 @@
 // scripts/setup-tailwind.js
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, parse } from 'path';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const configLine = "'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}'";
-const projectRoot = join(__dirname, '..');
 
-function findTailwindConfig(rootDir) {
-    for (const file of ['tailwind.config.js', 'tailwind.config.ts']) {
-        const configPath = join(rootDir, file);
-        if (existsSync(configPath)) return configPath;
+function findTailwindConfig(startDir) {
+    let currentDir = startDir;
+    while (currentDir !== parse(currentDir).root) {
+        for (const file of ['tailwind.config.js', 'tailwind.config.ts']) {
+            const configPath = join(currentDir, file);
+            if (existsSync(configPath)) return configPath;
+        }
+        currentDir = dirname(currentDir);
     }
     return null;
 }
@@ -53,7 +52,7 @@ if (!action || !['add', 'remove'].includes(action)) {
     process.exit(1);
 }
 
-const tailwindConfig = findTailwindConfig(projectRoot);
+const tailwindConfig = findTailwindConfig(process.cwd());
 if (!tailwindConfig) {
     console.error('❌ No Tailwind config file found in project root.');
     process.exit(1);
