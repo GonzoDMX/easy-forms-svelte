@@ -16,7 +16,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"postinstall": "node scripts/setup-tailwind.js add",
-		"preuninstall": "node scripts/setup-tailwind.js remove"
+		"uninstall": "node scripts/setup-tailwind.js remove"
 	},
 	"files": [
 		"dist",

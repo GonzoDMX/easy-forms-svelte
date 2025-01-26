@@ -22,7 +22,7 @@ function addConfigLine(filePath) {
         const contentArray = content.split('\n');
         const index = contentArray.findIndex(line => line.includes('content: ['));
         if (index !== -1) {
-            contentArray.splice(index + 1, 0, `    ${configLine},`);
+            contentArray.splice(index + 1, 0, `\t\t${configLine},`);
             writeFileSync(filePath, contentArray.join('\n'), 'utf8');
             console.log(`✅ Added '${configLine}' to ${filePath}`);
         } else {
