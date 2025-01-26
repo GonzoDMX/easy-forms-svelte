@@ -15,7 +15,7 @@
     <label for={name} class="block text-sm font-medium text-gray-700">
         {label}
         {#if required}
-            <span class="!text-red-500">*</span>
+            <span style="color: rgb(239 68 68);">*</span>
         {/if}
     </label>
     <div class="mt-1">
