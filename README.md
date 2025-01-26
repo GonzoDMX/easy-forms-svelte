@@ -6,6 +6,17 @@ Easy to use form components for Svelte 5 with TypeScript support, prioritizing s
 
 ```bash
 npm install easy-forms-svelte
+
+# Or with pnpm (recommended)
+pnpm add easy-forms-svelte
+```
+
+## Uninstall 
+
+```bash
+
+
+pnpm remove -P easy-forms-svelte
 ```
 
 ## Basic Usage
