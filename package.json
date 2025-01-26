@@ -82,8 +82,5 @@
 		"typescript-eslint": "^8.20.0",
 		"vite": "^6.0.0",
 		"vitest": "^3.0.0"
-	},
-	"dependencies": {
-		"easy-forms-svelte": "file:easy-forms-svelte-0.0.1.tgz"
 	}
 }
