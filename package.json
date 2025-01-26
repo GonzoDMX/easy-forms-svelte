@@ -15,7 +15,8 @@
 		"build-storybook": "storybook build",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"postinstall": "node scripts/setup-tailwind.cjs"
+		"postinstall": "node scripts/setup-tailwind.js add",
+		"preuninstall": "node scripts/setup-tailwind.js remove"
 	},
 	"files": [
 		"dist",
