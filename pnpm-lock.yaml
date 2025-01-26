@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      easy-forms-svelte:
-        specifier: file:easy-forms-svelte-0.0.1.tgz
-        version: file:easy-forms-svelte-0.0.1.tgz(i18n-iso-countries@7.13.0)(svelte-i18n@4.0.1(svelte@5.19.3))(svelte@5.19.3)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^3.2.4
@@ -1354,19 +1350,6 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
-
-  easy-forms-svelte@file:easy-forms-svelte-0.0.1.tgz:
-    resolution: {integrity: sha512-2gS7ipWPXshy93l2aVn/XKC5DKhu0yGsGkR1N+Cqdg1qCPOcX93Gujc5bJ1cRK6OHcc6Fs9OA8b/B0WKBuAltg==, tarball: file:easy-forms-svelte-0.0.1.tgz}
-    version: 0.0.1
-    peerDependencies:
-      i18n-iso-countries: ^7.0.0
-      svelte: ^5.0.0
-      svelte-i18n: ^4.0.0
-    peerDependenciesMeta:
-      i18n-iso-countries:
-        optional: true
-      svelte-i18n:
-        optional: true
 
   electron-to-chromium@1.5.88:
     resolution: {integrity: sha512-K3C2qf1o+bGzbilTDCTBhTQcMS9KW60yTAaTeeXsfvQuTDDwlokLam/AdqlqcSy9u4UainDgsHV23ksXAOgamw==}
@@ -3990,13 +3973,6 @@ snapshots:
       gopd: 1.2.0
 
   eastasianwidth@0.2.0: {}
-
-  easy-forms-svelte@file:easy-forms-svelte-0.0.1.tgz(i18n-iso-countries@7.13.0)(svelte-i18n@4.0.1(svelte@5.19.3))(svelte@5.19.3):
-    dependencies:
-      svelte: 5.19.3
-    optionalDependencies:
-      i18n-iso-countries: 7.13.0
-      svelte-i18n: 4.0.1(svelte@5.19.3)
 
   electron-to-chromium@1.5.88: {}
 

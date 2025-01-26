@@ -19,14 +19,18 @@ function findTailwindConfig(startDir) {
 function addConfigLine(filePath) {
     let content = readFileSync(filePath, 'utf8');
     if (!content.includes(configLine)) {
-        const contentArray = content.split('\n');
-        const index = contentArray.findIndex(line => line.includes('content: ['));
-        if (index !== -1) {
-            contentArray.splice(index + 1, 0, `\t\t${configLine},`);
-            writeFileSync(filePath, contentArray.join('\n'), 'utf8');
+        const match = content.match(/content:\s*\[(.*?)\]/s);
+        if (match) {
+            const contentArrayStr = match[1];
+            const newContentArrayStr = contentArrayStr.trim().endsWith(',') 
+                ? `${contentArrayStr}\n\t\t${configLine},`
+                : `${contentArrayStr},\n\t\t${configLine}`;
+            
+            content = content.replace(/content:\s*\[(.*?)\]/s, `content: [${newContentArrayStr}]`);
+            writeFileSync(filePath, content, 'utf8');
             console.log(`✅ Added '${configLine}' to ${filePath}`);
         } else {
-            console.error(`❌ Failed to find 'content: [' in ${filePath}`);
+            console.error(`❌ Failed to find content array in ${filePath}`);
             process.exit(1);
         }
     } else {
@@ -37,9 +41,8 @@ function addConfigLine(filePath) {
 function removeConfigLine(filePath) {
     let content = readFileSync(filePath, 'utf8');
     if (content.includes(configLine)) {
-        const contentArray = content.split('\n');
-        const filteredArray = contentArray.filter(line => !line.includes(configLine));
-        writeFileSync(filePath, filteredArray.join('\n'), 'utf8');
+        content = content.replace(new RegExp(`\\s*${configLine},?\\n?`), '');
+        writeFileSync(filePath, content, 'utf8');
         console.log(`✅ Removed '${configLine}' from ${filePath}`);
     } else {
         console.log(`ℹ️ '${configLine}' not found in ${filePath}`);
