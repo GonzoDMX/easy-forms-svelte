@@ -5,13 +5,27 @@ import path from 'path';
 // Tailwind configuration line to add or remove
 const configLine = "'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}'";
 
-// Function to detect the Tailwind config file
+function findProjectRoot(dir = process.cwd()) {
+	if (fs.existsSync(path.join(dir, 'package.json'))) {
+		return dir;
+	}
+	const parentDir = path.dirname(dir);
+	// Stop searching if reached the root directory
+	if (parentDir === dir) return null;
+	return findProjectRoot(parentDir);
+}
+
 function findTailwindConfig() {
+	const rootDir = findProjectRoot();
+	if (!rootDir) {
+		console.error('Project root not found.');
+		process.exit(1);
+	}
 	const possibleFiles = ['tailwind.config.js', 'tailwind.config.ts'];
 	for (const file of possibleFiles) {
-		const fullPath = path.resolve(process.cwd(), file);
-		if (fs.existsSync(fullPath)) {
-			return fullPath;
+		const filePath = path.join(rootDir, file);
+		if (fs.existsSync(filePath)) {
+			return filePath;
 		}
 	}
 	return null;
