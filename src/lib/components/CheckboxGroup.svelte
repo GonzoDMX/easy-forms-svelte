@@ -7,7 +7,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         options,
         group = $bindable([]),
         columns = 2,

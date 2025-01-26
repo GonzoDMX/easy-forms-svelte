@@ -1,7 +1,6 @@
 # easy-forms-svelte
 
-Easy to use form components for Svelte 5 with TypeScript support.
-This library prioritizes simplicity over flexibility. The goal is to make forms easy to implement and reduce repeated boiler plate code. For convenience some built-in validators are included for handling standard HTML <input> types.
+Easy to use form components for Svelte 5 with TypeScript support, prioritizing simplicity over flexibility.
 
 ## Installation
 
@@ -9,7 +8,7 @@ This library prioritizes simplicity over flexibility. The goal is to make forms 
 npm install easy-forms-svelte
 ```
 
-## Usage
+## Basic Usage
 
 ```svelte
 <script lang="ts">
@@ -33,6 +32,43 @@ npm install easy-forms-svelte
 </Form>
 ```
 
+## Internationalization
+
+### Basic Usage
+The library works out of the box in English without any additional setup.
+
+### Full i18n Support
+For multi-language support, install the optional dependencies:
+
+```bash
+npm install i18n-iso-countries svelte-i18n
+```
+
+Register languages in your app's entry point:
+
+```typescript
+import countries from 'i18n-iso-countries';
+import en from 'i18n-iso-countries/langs/en.json' assert { type: 'json' };
+import fr from 'i18n-iso-countries/langs/fr.json' assert { type: 'json' };
+
+countries.registerLocale(en);
+countries.registerLocale(fr);
+```
+
+Set up svelte-i18n:
+
+```typescript
+import { locale } from 'svelte-i18n';
+
+// Set initial locale
+locale.set('en');
+
+// Switch language
+locale.set('fr');
+```
+
+Components like CountryInput will automatically display content in the active locale.
+
 ## Components
 
 - Form - Base form container
@@ -44,6 +80,7 @@ npm install easy-forms-svelte
 - CheckboxGroup - Group of checkboxes
 - ConsentCheckbox - Single checkbox with text
 - DropdownSelect - Select dropdown
+- CountryInput - Country selector with ISO code normalization
 
 ## Development
 

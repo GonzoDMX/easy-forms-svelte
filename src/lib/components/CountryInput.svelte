@@ -1,26 +1,27 @@
-<!-- src/lib/components/TextInput.svelte -->
+<!-- src/lib/components/CountryInput.svelte -->
 <script lang="ts">
-    import type { InputProps} from '$lib/types.js';
+    import type { InputProps } from '$lib/types.js';
+    import type { CountryData } from '$lib/utils/country-types.js';
     import FormField from '$lib/components/FormField.svelte';
-    import { getLocale, getCountryData, standardizeCountry } from '$lib/utils/country.js';
+    import { countryUtils } from '$lib/utils/country.js';
 
     let { 
         name,
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
+        invalid_msg = 'Invalid country',
         placeholder = '',
         value = $bindable(''),
-        validator = /^[a-zA-Z\s]+$/
+        validator
     } : InputProps = $props();
 
-    let userLanguage = getLocale();
-    let countryOptions = $state<{ name: string }[]>([]); // Filtered country options for autocomplete
-    let allCountryOptions = getCountryData(userLanguage); 
+    let userLanguage = countryUtils.getLocale();
+    let countryOptions = $state<CountryData[]>([]);
+    let allCountryOptions = countryUtils.getCountryData(userLanguage);
     let error = $state('');
     
-    function validate(value: string): void {
+    function validate(val: string): void {
         if (required && !value.trim()) {
             error = error_msg;
             return;
@@ -32,32 +33,19 @@
         error = '';
     }
 
-    // Initial validation
     $effect(() => {
-        if (value) {
-            validate(value);
-        }
+        if (value) validate(value);
     });
 
     function handleCountryInput(event: Event) {
         const input = (event.target as HTMLInputElement).value.trim();
+        
+        countryOptions = input.length >= 2 
+            ? allCountryOptions.filter(({ name }) => 
+                name.toLowerCase().startsWith(input.toLowerCase()))
+            : [];
 
-        // Show autocomplete only after two characters
-        if (input.length >= 2) {
-            countryOptions = allCountryOptions.filter(({ name }: { name: string }) =>
-            name.toLowerCase().startsWith(input.toLowerCase())
-            );
-        } else {
-            countryOptions = []; // Clear options if input is too short
-        }
-
-        // Validate and standardize input
-        const standardizedCode = standardizeCountry(input, userLanguage);
-        if (!standardizedCode) {
-            value = ''; // Clear the code if invalid
-        } else {
-            value = standardizedCode; // Store the ISO Alpha-2 code
-        }
+        value = countryUtils.standardizeCountry(input, userLanguage) ?? '';
     }
 </script>
 
