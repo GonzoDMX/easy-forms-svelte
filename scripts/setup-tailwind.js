@@ -1,6 +1,6 @@
 // scripts/setup-tailwind.js
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Tailwind configuration line to add or remove
 const configLine = "'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}'";
