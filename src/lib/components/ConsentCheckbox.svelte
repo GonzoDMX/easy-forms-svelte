@@ -24,7 +24,7 @@
         </div>
         <span class="ml-3 text-sm text-gray-600 select-none">
             {#if required}
-                <span class="text-red-500">*</span>
+                <span class="!text-red-500">*</span>
             {/if}
             {text}
         </span>
