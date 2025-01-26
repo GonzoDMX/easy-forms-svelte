@@ -14,10 +14,12 @@
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"test:unit": "vitest",
-		"test": "npm run test:unit -- --run"
+		"test": "npm run test:unit -- --run",
+		"postinstall": "node scripts/setup-tailwind.js"
 	},
 	"files": [
 		"dist",
+		"scripts",
 		"!dist/**/*.test.*",
 		"!dist/**/*.spec.*"
 	],
