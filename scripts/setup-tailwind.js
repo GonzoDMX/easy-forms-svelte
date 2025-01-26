@@ -1,16 +1,23 @@
 // scripts/setup-tailwind.js
-import fs from 'fs';
-import path from 'path';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { resolve } from 'path';
 
-const configPath = path.resolve(process.env.INIT_CWD, 'tailwind.config.js');
-
-if (fs.existsSync(configPath)) {
-  let config = fs.readFileSync(configPath, 'utf8');
-  if (!config.includes('easy-forms-svelte')) {
-    config = config.replace(
-      /content:\s*\[([\s\S]*?)\]/,
-      `content: [$1, './node_modules/easy-forms-svelte/**/*.{html,js,svelte,ts}']`
-    );
-    fs.writeFileSync(configPath, config);
+try {
+  const configPath = resolve(process.cwd(), 'tailwind.config.js');
+  if (existsSync(configPath)) {
+    let config = readFileSync(configPath, 'utf8');
+    if (!config.includes('easy-forms-svelte')) {
+      // Handle different content array formats
+      const contentPattern = /content:\s*\[([\s\S]*?)\]/;
+      const match = config.match(contentPattern);
+      if (match) {
+        const newContent = `content: [${match[1]},\n\t\t'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}']`;
+        config = config.replace(contentPattern, newContent);
+        writeFileSync(configPath, config);
+        console.log('Updated Tailwind config');
+      }
+    }
   }
+} catch (err) {
+  console.error('Error updating Tailwind config:', err);
 }
