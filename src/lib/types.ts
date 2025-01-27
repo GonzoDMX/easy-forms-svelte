@@ -94,7 +94,7 @@ export type ConsentCheckProps = {
 export type OptionPair = {
     value: string;
     label: string;
-}
+};
 
 export type SelectOptions = readonly (string | OptionPair)[] | (string | OptionPair)[];
 
