@@ -52,7 +52,7 @@
         bind:value={value}
         bind:this={textarea}
         oninput={() => { validate(value); }}
-        style="height: {DEFAULT_HEIGHT}px; {resize ? `max-height: ${MAX_HEIGHT}px;` : ''}"
+        style="min-height: {DEFAULT_HEIGHT}px; {resize ? `max-height: ${MAX_HEIGHT}px;` : 'height: ${DEFAULT_HEIGHT}px;'}"
         class="block w-full rounded-md border-gray-300 shadow-sm
                focus:border-indigo-500 focus:ring-indigo-500
                {resize ? 'resize-y' : 'resize-none'}"
