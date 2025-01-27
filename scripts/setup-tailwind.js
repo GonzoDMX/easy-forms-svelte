@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 const configLine = "'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}'";
 
 function log(message) {
-    process.stdout.write(message + '\n');
+    console.error(message);
 }
 
 function findTailwindConfig(startDir) {
@@ -21,21 +21,27 @@ function findTailwindConfig(startDir) {
 }
 
 function formatContentArray(contentStr, newLine) {
-    // Remove any trailing commas and whitespace
-    contentStr = contentStr.trim().replace(/,\s*$/, '');
+    // First, let's clean up the input string by removing outer brackets and any whitespace
+    const cleanContent = contentStr.trim().replace(/^\[|\]$/g, '').trim();
     
-    // Check if it's a single-line or multi-line array
-    const isMultiLine = contentStr.includes('\n');
-    
-    if (isMultiLine) {
-        // Handle multi-line format
-        const lines = contentStr.split('\n').map(line => line.trim()).filter(line => line);
-        return `[\n\t\t${lines.join(',\n\t\t')},\n\t\t${newLine}\n\t]`;
+    // Split by commas but handle potential empty entries and clean up whitespace
+    const entries = cleanContent
+        .split(',')
+        .map(entry => entry.trim())
+        .filter(entry => entry.length > 0);  // Remove any empty entries
+
+    // Add our new line
+    entries.push(newLine);
+
+    // Check if we need multi-line format (if there's more than one entry or existing entries contain newlines)
+    const needsMultiLine = entries.length > 1 || cleanContent.includes('\n');
+
+    if (needsMultiLine) {
+        // Create multi-line format with proper indentation
+        return `[\n\t\t${entries.join(',\n\t\t')}\n\t]`;
     } else {
-        // Convert single-line to multi-line format
-        const items = contentStr.slice(1, -1).split(',').map(item => item.trim()).filter(item => item);
-        items.push(newLine);
-        return `[\n\t\t${items.join(',\n\t\t')}\n\t]`;
+        // Single line format
+        return `[${entries.join(', ')}]`;
     }
 }
 
