@@ -12,10 +12,28 @@ This is a form components library for Svelte 5. It prioritizes simplicity over f
 ## Installation
 
 ```bash
-npm install easy-forms-svelte
-
-# Or with pnpm (recommended)
 pnpm add easy-forms-svelte
+```
+
+#### Setup Tailwind.config
+Then add this line to 'tailwind.config.ts' or 'tailwind.config.js' depending on your project setup.
+
+```js
+import forms from '@tailwindcss/forms';
+import type { Config } from 'tailwindcss';
+
+export default {
+	content: [
+    './src/**/*.{html,js,svelte,ts}',
+    './node_modules/easy-forms-svelte/**/*.{svelte,js,ts}' // <- Add this
+    ],
+
+	theme: {
+		extend: {}
+	},
+
+	plugins: [forms]
+} satisfies Config;
 ```
 
 ## Uninstall 
