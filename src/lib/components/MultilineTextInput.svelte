@@ -34,20 +34,6 @@
         error = '';
     }
 
-    function adjustHeight() {
-        if (!resize) return;
-        
-        textarea.style.height = 'auto';
-        const newHeight = Math.min(
-            Math.max(
-                textarea.scrollHeight,
-                DEFAULT_HEIGHT
-            ),
-            MAX_HEIGHT
-        );
-        textarea.style.height = `${newHeight}px`;
-    }
-
     // Initial validation
     $effect(() => {
         if (value) {
@@ -65,10 +51,7 @@
         {required}
         bind:value={value}
         bind:this={textarea}
-        oninput={() => {
-            validate(value);
-            adjustHeight();
-        }}
+        oninput={() => { validate(value); }}
         style="height: {DEFAULT_HEIGHT}px; {resize ? `max-height: ${MAX_HEIGHT}px;` : ''}"
         class="block w-full rounded-md border-gray-300 shadow-sm
                focus:border-indigo-500 focus:ring-indigo-500
