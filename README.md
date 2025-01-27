@@ -1,6 +1,13 @@
 # easy-forms-svelte
 
-Easy to use form components for Svelte 5 with TypeScript support, prioritizing simplicity over flexibility.
+This is a form components library for Svelte 5. It prioritizes simplicity over flexibility. The primary goals of this library are to do the following:
+
+- Reduce boilerplate in form creation
+- Provide pre-styled, accessible form components
+- Integrate well with internationalization
+- Maintains Svelte's reactivity model with bind:value
+- Allows for customization while providing sensible defaults
+- Integrates with your tailwind configuration
 
 ## Installation
 
@@ -14,9 +21,18 @@ pnpm add easy-forms-svelte
 ## Uninstall 
 
 ```bash
+pnpm remove easy-forms-svelte
+```
 
-
-pnpm remove -P easy-forms-svelte
+Then remove the following line from 'tailwind.config.ts' or 'tailwind.config.js':
+```json
+export default {
+	content: [
+		'./src/**/*.{html,js,svelte,ts}',
+		'./node_modules/easy-forms-svelte/**/*.{svelte,js,ts}' <- REMOVE
+	],
+	...
+}
 ```
 
 ## Basic Usage

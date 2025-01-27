@@ -91,28 +91,34 @@ export type ConsentCheckProps = {
     checked: boolean;       // Bindable 'checked' boolean value
 };
 
+export type OptionPair = {
+    value: string;
+    label: string;
+}
+
+export type SelectOptions = readonly (string | OptionPair)[] | (string | OptionPair)[];
+
 export type CheckboxGroupProps = {
-    name: string;           // Unique identifier
-    label: string;          // Displayed label text
-    required?: boolean;     // Is this field required to submit form?
-    error_msg?: string;     // Error message to display
-    options: string[];      // Array of user-defined checkbox options
-    group: string[];        // Bindable array, gets populated with checked options
-    columns?: 2 | 3 | 4;    // Number of columns to display, TODO maybe automate this
+    name: string;               // Unique identifier
+    label: string;              // Displayed label text
+    required?: boolean;         // Is this field required to submit form?
+    error_msg?: string;         // Error message to display
+    options: SelectOptions;     // Array of options (simple strings or value/label pairs)
+    group: string[];            // Bindable array, gets populated with checked options
+    columns?: 2 | 3 | 4;        // Number of columns to display, TODO maybe automate this
 };
 // ---------------------------- //
 
-
 // Dropdown Input Types ---------------- //
 export type DropdownSelectProps = {
-    name: string;            // Unique identifier
-    label: string;           // Displayed label text
-    required?: boolean;      // Is this field required to submit form?
-    error_msg?: string;      // Error message to display
-    options: string[];       // Array of user-defined dropdown options
-    value: string;           // Bindable value
-    selected_value?: string; // Default selected value
-                             // If 'selected_value' is provided it overrides placeholder 
-    placeholder?: string;    // Placeholder text
+    name: string;               // Unique identifier
+    label: string;              // Displayed label text
+    required?: boolean;         // Is this field required to submit form?
+    error_msg?: string;         // Error message to display
+    options: SelectOptions;     // Array of options (simple strings or value/label pairs)
+    value: string;              // Bindable value
+    selected_value?: string;    // Default selected value
+                                // If 'selected_value' is provided it overrides placeholder 
+    placeholder?: string;       // Placeholder text
 };
 // ---------------------------- //

@@ -1,6 +1,6 @@
 <!-- src/lib/components/CheckboxGroup.svelte -->
 <script lang="ts">
-    import type { CheckboxGroupProps } from '$lib/types.js';
+    import type { CheckboxGroupProps, OptionPair } from '$lib/types.js';
 
     let {
         name,
@@ -19,6 +19,13 @@
         3: 'sm:grid-cols-3',
         4: 'md:grid-cols-4'
     };
+
+    // Helper functions to handle both string and OptionPair types
+    const getValue = (option: string | OptionPair): string => 
+        typeof option === 'string' ? option : option.value;
+
+    const getLabel = (option: string | OptionPair): string =>
+        typeof option === 'string' ? option : option.label;
 </script>
 
 <fieldset class="form-field">
@@ -28,17 +35,17 @@
     </legend>
     <div class="grid {columnClasses[columns]} gap-4">
         {#each options as option, index}
-            <label for="tool-{name}-{index}" class="flex items-center space-x-2">
+            <label for="{name}-{index}" class="flex items-center space-x-2">
                 <input
                     type="checkbox"
-                    id="tool-{name}-{index}"
+                    id="{name}-{index}"
                     bind:group={group}
-                    value={option}
+                    value={getValue(option)}
                     autocomplete="off"
                     class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                 />
                 <span class="text-sm text-gray-700">
-                    {option}
+                    {getLabel(option)}
                 </span>
             </label>
         {/each}

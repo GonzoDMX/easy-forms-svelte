@@ -11,7 +11,7 @@
         invalid_msg = 'Invalid input',
         prefix,
         suffix,
-        precision,
+        precision = 0,
         steps = 1,
         value = $bindable(null),
         max,

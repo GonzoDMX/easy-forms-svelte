@@ -28,41 +28,49 @@ function addConfigLine(filePath) {
             
             content = content.replace(/content:\s*\[(.*?)\]/s, `content: [${newContentArrayStr}]`);
             writeFileSync(filePath, content, 'utf8');
-            console.log(`✅ Added '${configLine}' to ${filePath}`);
+            console.log('\n✅ Tailwind configuration has been updated successfully!');
+            console.log(`Added the following line to ${filePath}:`);
+            console.log(`   ${configLine}\n`);
         } else {
             console.error(`❌ Failed to find content array in ${filePath}`);
-            process.exit(1);
+            displayTailwindInstructions();
         }
     } else {
-        console.log(`ℹ️ '${configLine}' already exists in ${filePath}`);
+        console.log(`\nℹ️  The required configuration is already present in ${filePath}\n`);
     }
 }
 
-function removeConfigLine(filePath) {
-    let content = readFileSync(filePath, 'utf8');
-    if (content.includes(configLine)) {
-        content = content.replace(new RegExp(`\\s*${configLine},?\\n?`), '');
-        writeFileSync(filePath, content, 'utf8');
-        console.log(`✅ Removed '${configLine}' from ${filePath}`);
-    } else {
-        console.log(`ℹ️ '${configLine}' not found in ${filePath}`);
-    }
+function displayTailwindInstructions() {
+    console.log('\n⚠️  Important: For full library features, please manually add the following line');
+    console.log('   to the content array in your tailwind.config.js/ts file:');
+    console.log(`   ${configLine}\n`);
 }
 
-const action = process.argv[2];
-if (!action || !['add', 'remove'].includes(action)) {
-    console.error('❌ Invalid action. Use "add" or "remove".');
-    process.exit(1);
+function displayI18nInstructions() {
+    console.log('\n📘 Internationalization Support:');
+    console.log('   For full internationalization compatibility, please install these packages:');
+    console.log('   - svelte-i18n');
+    console.log('   - i18n-iso-countries\n');
+    console.log('   Check the Internationalization section in our docs for usage examples:');
+    console.log('   https://www.npmjs.com/package/easy-forms-svelte\n');
 }
 
+function displayUninstallNote() {
+    console.log('\nℹ️  Note: If you later remove this library from your project,');
+    console.log('   remember to manually remove this line from your tailwind.config file:\n');
+    console.log(configLine);
+}
+
+// Main execution
 const tailwindConfig = findTailwindConfig(process.cwd());
-if (!tailwindConfig) {
-    console.error('❌ No Tailwind config file found in project root.');
-    process.exit(1);
-}
 
-if (action === 'add') {
+if (tailwindConfig) {
     addConfigLine(tailwindConfig);
 } else {
-    removeConfigLine(tailwindConfig);
+    console.log('\n⚠️  No Tailwind config file found in the project directory.');
+    displayTailwindInstructions();
 }
+
+// Display additional information
+displayI18nInstructions();
+displayUninstallNote();
