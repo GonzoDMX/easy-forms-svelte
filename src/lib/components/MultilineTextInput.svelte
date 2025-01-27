@@ -13,14 +13,14 @@
         value = $bindable(''),
         validator,
         autocomplete = 'off',
-        min_height = 1,
-        height = 3,
-        max_height = 4,
-        resize = false,
+        resize = false
     } : TextAreaProps = $props();
 
     let error = $state('');
     let textarea: HTMLTextAreaElement;
+
+    const DEFAULT_HEIGHT = 72; // 3 lines
+    const MAX_HEIGHT = DEFAULT_HEIGHT * 2; // 6 lines
 
     function validate(value: string) {
         if (required && !value.trim()) {
@@ -40,12 +40,12 @@
         textarea.style.height = 'auto';
         const newHeight = Math.min(
             Math.max(
-                textarea.scrollHeight / 24,
-                min_height
+                textarea.scrollHeight,
+                DEFAULT_HEIGHT
             ),
-            max_height
+            MAX_HEIGHT
         );
-        textarea.style.height = `${newHeight * 24}px`;
+        textarea.style.height = `${newHeight}px`;
     }
 
     // Initial validation
@@ -69,7 +69,7 @@
             validate(value);
             adjustHeight();
         }}
-        style="min-height: {min_height * 24}px; height: {height * 24}px; max-height: {max_height * 24}px;"
+        style="height: {DEFAULT_HEIGHT}px; {resize ? `max-height: ${MAX_HEIGHT}px;` : ''}"
         class="block w-full rounded-md border-gray-300 shadow-sm
                focus:border-indigo-500 focus:ring-indigo-500
                {resize ? 'resize-y' : 'resize-none'}"

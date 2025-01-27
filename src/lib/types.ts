@@ -43,10 +43,7 @@ export type TextInputProps = InputProps & {
 // TODO Simplify height parameters
 export type TextAreaProps =  InputProps & {
     autocomplete?: 'off' | 'on';    // Enable or disable autocomplete
-    min_height?: number;            // Minimum height of textarea
-    height?: number;                // Default height of textarea
-    max_height?: number;            // Maximum height of textarea
-    resize?: boolean;               // Allow resizing of textarea
+    resize?: boolean;        // Textarea height
 };
 // ---------------------------- //
 
