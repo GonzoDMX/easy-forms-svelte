@@ -25,20 +25,17 @@
 </script>
 
 <FormField {name} {label} {error}>
-    <select
-        id={name}
-        {name}
-        {required}
-        bind:value={value}
-        class="block w-full rounded-md border-gray-300 shadow-sm
-               focus:border-indigo-500 focus:ring-indigo-500"
-        {#if placeholder && !selected_value}
-        data-placeholder="true"
-        {/if}
-    >
-        {#if placeholder && !selected_value}
-            <option value="" disabled selected hidden>{placeholder}</option>
-        {/if}
+    {#if placeholder && !selected_value}
+        <select
+            id={name}
+            {name}
+            {required}
+            bind:value={value}
+            class="block w-full rounded-md border-gray-300 shadow-sm
+                focus:border-indigo-500 focus:ring-indigo-500"
+            data-placeholder="true"
+        >
+        <option value="" disabled selected hidden>{placeholder}</option>
         {#each options as option}
             {#if selected_value === option}
                 <option value={getValue(option)} selected>{getLabel(option)}</option>
@@ -46,5 +43,23 @@
                 <option value={getValue(option)}>{getLabel(option)}</option>
             {/if}
         {/each}
-    </select>
+        </select>
+    {:else}
+        <select
+            id={name}
+            {name}
+            {required}
+            bind:value={value}
+            class="block w-full rounded-md border-gray-300 shadow-sm
+                focus:border-indigo-500 focus:ring-indigo-500"
+        >
+        {#each options as option}
+            {#if selected_value === option}
+                <option value={getValue(option)} selected>{getLabel(option)}</option>
+            {:else}
+                <option value={getValue(option)}>{getLabel(option)}</option>
+            {/if}
+        {/each}
+        </select>
+    {/if}
 </FormField>
