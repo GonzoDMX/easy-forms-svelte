@@ -10,7 +10,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid country',
         placeholder = '',
         value = $bindable(''),
         validator
@@ -20,6 +19,7 @@
     let countryOptions = $state<CountryData[]>([]);
     let allCountryOptions = countryUtils.getCountryData(userLanguage);
     let error = $state('');
+    let warn = $state(false);
     
     function validate(val: string): void {
         if (required && !value.trim()) {
@@ -27,9 +27,10 @@
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
+        warn = false;
         error = '';
     }
 

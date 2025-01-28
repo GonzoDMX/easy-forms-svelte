@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         placeholder = '',
         value = $bindable(''),
         validator = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
@@ -16,16 +15,19 @@
 
     let error = $state('');
     
+    let warn = $state(false);
+
     function validate(value: string): void {
         if (required && !value.trim()) {
             error = error_msg;
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
         error = '';
+        warn = false;
     }
 
     // Initial validation

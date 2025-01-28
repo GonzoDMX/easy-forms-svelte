@@ -1,4 +1,3 @@
-<!-- src/lib/components/FormField.svelte -->
 <script lang="ts">
     import type { FormFieldProps } from '$lib/types.js';
 
@@ -6,9 +5,14 @@
         name,
         label,
         required = false,
-        error = '',
+        error = null,
         children
     } : FormFieldProps = $props();
+
+    // Debug props
+    $effect(() => {
+        console.log(`FormField ${name} props updated:`, { error });
+    });
 </script>
 
 <div class="form-field w-full">

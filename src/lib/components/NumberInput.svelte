@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         prefix,
         suffix,
         precision = 0,
@@ -19,6 +18,7 @@
     } : NumberInputProps = $props();
 
     let error = $state('');
+    let warn = $state(false);
 
     function formatValue(val: number | null): string {
         if (val === null) return '';
@@ -34,14 +34,15 @@
         }
         if (num !== null) {
             if (min !== undefined && num < min) {
-                error = invalid_msg;
+                warn = true;
                 return;
             }
             if (max !== undefined && num > max) {
-                error = invalid_msg;
+                warn = true;
                 return;
             }
         }
+        warn = false;
         error = '';
     }
 
@@ -78,6 +79,7 @@
         {/if}
         <input
             type="number"
+            id={name}
             {name}
             {required}
             value={formatValue(value)}

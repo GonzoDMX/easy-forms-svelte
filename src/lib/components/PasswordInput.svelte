@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid password',
         placeholder = '',
         value = $bindable(''),
         // At least 12 characters, 1 uppercase, 1 lowercase, 1 number, 1 non-alphanumeric symbol
@@ -16,16 +15,18 @@
     } : InputProps = $props();
 
     let error = $state('');
-    
+    let warn = $state(false);
+
     function validate(value: string): void {
         if (required && !value.trim()) {
             error = error_msg;
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
+        warn = false;
         error = '';
     }
 

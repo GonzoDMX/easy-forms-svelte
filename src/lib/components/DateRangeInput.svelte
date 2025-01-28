@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         bind_start_date,
         bind_end_date,
         start_value,
@@ -18,6 +17,7 @@
     } : DateRangeProps = $props();
 
     let error = $state('');
+    let warn = $state(false);
 
     // Set initial values if provided
     $effect(() => {
@@ -40,20 +40,20 @@
         }
 
         if (bind_start_date && min_date && bind_start_date < min_date) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
 
         if (bind_end_date && max_date && bind_end_date > max_date) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
 
         if (bind_start_date && bind_end_date && bind_end_date < bind_start_date) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
-
+        warn = false;
         error = '';
     }
 

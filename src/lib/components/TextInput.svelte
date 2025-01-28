@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         placeholder = '',
         value = $bindable(''),
         validator,
@@ -17,15 +16,18 @@
 
     let error = $state('');
 
+    let warn = $state(false);
+
     function validate(value: string): void {
         if (required && !value.trim()) {
             error = error_msg;
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
+        warn = false;
         error = '';
     }
 

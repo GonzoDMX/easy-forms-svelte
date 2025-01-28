@@ -24,7 +24,7 @@
         typeof option === 'string' ? option : option.label;
 </script>
 
-<FormField {name} {label} {error}>
+<FormField {name} {label} {required} {error}>
     {#if placeholder && !selected_value}
         <select
             id={name}

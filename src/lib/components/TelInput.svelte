@@ -8,13 +8,13 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         placeholder = '',
         value = $bindable(''),
         validator = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/
     } : InputProps = $props();
 
     let error = $state('');
+    let warn = $state(false);
 
     function validate(value: string): void {
         if (required && !value.trim()) {
@@ -22,9 +22,10 @@
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
+        warn = false;
         error = '';
     }
 

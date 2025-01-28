@@ -1,42 +1,52 @@
 <!-- src/lib/components/EmailInput.svelte -->
 <script lang="ts">
-    import type { InputProps } from '$lib/types.js';
+    import { getContext } from 'svelte';
+    import type { InputProps, FormStore } from '$lib/types.js';
     import FormField from '$lib/components/FormField.svelte';
 
     let { 
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         placeholder = '',
         value = $bindable(''),
-        validator =/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        validator =/^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        tooltip = 'Please enter a valid email address (e.g., user@example.com)'
     } : InputProps = $props();
 
-    let error = $state('');
-    
-    function validate(value: string): void {
-        if (required && !value.trim()) {
-            error = error_msg;
-            return;
-        }
-        if (validator && !validator.test(value)) {
-            error = invalid_msg;
-            return;
-        }
-        error = '';
+    const formStore = getContext<FormStore>('formStore');
+    formStore.registerField(name, required);
+
+    let showWarning = $state(false);
+    const isError = formStore.isFieldInError(name);
+
+    function validateInput() {
+        const isEmpty = !value || value.trim() === '';
+        showWarning = !isEmpty && !validator.test(value);
+        formStore.validateField(name, value, validator);
     }
 
-    // Initial validation
+    function handleInput() {
+        formStore.clearFieldError(name);
+        validateInput();
+    }
+
     $effect(() => {
-        if (value) {
-            validate(value);
-        }
+        validateInput();
     });
+
+    const inputClasses = $derived(
+        $isError ? 'border-red-300' :
+        showWarning ? 'border-gray-300 focus:border-amber-300 focus:ring-amber-300' :
+                     'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
+    );
 </script>
 
-<FormField {name} {label} {required} {error}>
+<FormField 
+    {name} 
+    {label} 
+    {required}
+>
     <input
         id={name}
         {name}
@@ -45,8 +55,8 @@
         autocomplete='email'
         {required}
         bind:value={value}
-        oninput={() => validate(value)}
-        class="block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500"
+        oninput={handleInput}
+        class="block w-full rounded-md shadow-sm {inputClasses}"
+        title={tooltip ?? undefined}
     />
 </FormField>

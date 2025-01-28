@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         placeholder = '',
         value = $bindable(''),
         validator,
@@ -17,6 +16,7 @@
     } : TextAreaProps = $props();
 
     let error = $state('');
+    let warn = $state(false);
     let textarea: HTMLTextAreaElement;
 
     const DEFAULT_HEIGHT = 72; // 3 lines
@@ -28,9 +28,10 @@
             return;
         }
         if (validator && !validator.test(value)) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
+        warn = false;
         error = '';
     }
 

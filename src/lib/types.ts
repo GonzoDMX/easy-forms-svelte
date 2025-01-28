@@ -1,12 +1,43 @@
 // src/lib/types.ts
 import type { AutocompleteType } from '$lib/autocomplete-types.js'
 export type FormStyle = 'default' | 'compact' | 'bordered';
+import type { Readable } from 'svelte/store';
+
+export interface FormFieldState {
+    name: string;
+    isRequired: boolean;
+    isEmpty: boolean;
+    hasValidator: boolean;
+    validatorPassed: boolean | null;
+}
+
+export interface FormStore {
+    registerField: (name: string, required: boolean) => void;
+    validateField: (name: string, value: any, validator?: RegExp) => void;
+    handleSubmit: () => { 
+        isValid: boolean;
+        errors: Array<{ 
+            name: string; 
+            type: 'empty' | 'invalid' 
+        }> 
+    };
+    isFieldInError: (name: string) => Readable<boolean>;
+    clearFieldError: (name: string) => void;
+}
+
+export interface FormState {
+    fields: Record<string, FormFieldState>;
+    isSubmitting: boolean;
+    isValid: boolean;
+    hasBeenSubmitted: boolean;
+}
 
 export type FormProps = {
     title?: string;
     description?: string;
     style?: FormStyle;
     submit_label?: string;
+    error_message?: string; 
     on_submit: (event: SubmitEvent) => void;
     is_submitting?: boolean;
     children: () => any;
@@ -16,7 +47,8 @@ export interface FormFieldProps {
     name: string;
     label: string;
     required?: boolean;
-    error?: string;
+    error?: string | null;
+    warning?: string | null;
     children: () => any;
 }
 
@@ -25,7 +57,7 @@ type BaseProps = {
     label: string;          // Displayed label text
     required?: boolean;     // Is this field required to submit form?
     error_msg?: string;     // Error message to display
-    invalid_msg?: string;   // Invalid value message to display
+    tooltip?: string | null; // Tooltip text
 }
 
 // Text Input Types ---------------- //

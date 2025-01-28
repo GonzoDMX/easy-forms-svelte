@@ -8,7 +8,6 @@
         label,
         required = false,
         error_msg = 'This field is required',
-        invalid_msg = 'Invalid input',
         value = $bindable(null),
         min_date,
         max_date,
@@ -27,15 +26,15 @@
         }
 
         if (min_date && date < min_date) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
 
         if (max_date && date > max_date) {
-            error = invalid_msg;
+            warn = true;
             return;
         }
-
+        warn = false;
         error = '';
     }
 
