@@ -120,10 +120,8 @@ export type BaseDateProps = BaseProps & {
 };
 
 export type DateRangeProps = BaseDateProps & {
-    bind_start_date: Date | null;
-    bind_end_date: Date | null;
-    start_value?: Date;
-    end_value?: Date;
+    start_date: Date | null;
+    end_date: Date | null;
 };
 
 export type DateInputProps = BaseDateProps & {

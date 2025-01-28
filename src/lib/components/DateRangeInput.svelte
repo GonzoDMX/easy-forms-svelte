@@ -1,117 +1,149 @@
 <!-- src/lib/components/DateRangeInput.svelte -->
 <script lang="ts">
-    import type { DateRangeProps } from '$lib/types.js';
+    import { getContext } from 'svelte';
+    import type { DateRangeProps, FormStore, NumRange } from '$lib/types.js';
     import FormField from '$lib/components/FormField.svelte';
 
     let {
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
-        bind_start_date,
-        bind_end_date,
-        start_value,
-        end_value,
+        start_date = $bindable(null),
+        end_date = $bindable(null),
         min_date,
         max_date,
+        tooltip
     } : DateRangeProps = $props();
 
-    let error = $state('');
-    let warn = $state(false);
+    const formStore = getContext<FormStore>('formStore');
+    // Register both fields with the form store
+    formStore.registerField(`${name}_start`, required);
+    formStore.registerField(`${name}_end`, required);
 
-    // Set initial values if provided
-    $effect(() => {
-        if (start_value !== undefined && bind_start_date === null) {
-            bind_start_date = start_value;
-        }
-        if (end_value !== undefined && bind_end_date === null) {
-            bind_end_date = end_value;
-        }
-    });
+    let showWarning = $state(false);
+    const isStartError = formStore.isFieldInError(`${name}_start`);
+    const isEndError = formStore.isFieldInError(`${name}_end`);
+
+    // Create validators for both dates
+    const startValidator: NumRange = {
+        min: min_date?.getTime(),
+        max: max_date?.getTime()
+    };
+
+    function getEndValidator(startDate: Date | null): NumRange {
+        return {
+            min: startDate?.getTime() ?? min_date?.getTime(),
+            max: max_date?.getTime()
+        };
+    }
 
     function formatDate(date: Date | null): string {
         return date ? date.toISOString().split('T')[0] : '';
     }
 
     function validateDates() {
-        if (required && (!bind_start_date || !bind_end_date)) {
-            error = error_msg;
-            return;
+        const startEmpty = !start_date;
+        const endEmpty = !end_date;
+
+        if (!startEmpty || !endEmpty) {
+            showWarning = Boolean(
+                (start_date && min_date && start_date < min_date) ||
+                (end_date && max_date && end_date > max_date) ||
+                (start_date && end_date && end_date < start_date)
+            );
+        } else {
+            showWarning = false;
         }
 
-        if (bind_start_date && min_date && bind_start_date < min_date) {
-            warn = true;
-            return;
-        }
-
-        if (bind_end_date && max_date && bind_end_date > max_date) {
-            warn = true;
-            return;
-        }
-
-        if (bind_start_date && bind_end_date && bind_end_date < bind_start_date) {
-            warn = true;
-            return;
-        }
-        warn = false;
-        error = '';
+        // Validate with form store
+        formStore.validateField(
+            `${name}_start`, 
+            start_date?.getTime(),
+            startValidator
+        );
+        
+        formStore.validateField(
+            `${name}_end`,
+            end_date?.getTime(),
+            getEndValidator(start_date)
+        );
     }
 
     function handleStartDateChange(event: Event) {
+        formStore.clearFieldError(`${name}_start`);
+        
         const input = (event.target as HTMLInputElement).value;
         if (!input && !required) {
-            bind_start_date = null;
+            start_date = null;
         } else {
-            bind_start_date = new Date(input);
-            // If end date is before new start date, update it
-            if (bind_end_date && bind_end_date < bind_start_date) {
-                bind_end_date = bind_start_date;
+            const newDate = new Date(input);
+            if (!isNaN(newDate.getTime())) {
+                start_date = newDate;
+                // If end date is before new start date, update it
+                if (end_date && end_date < start_date) {
+                    end_date = new Date(start_date);
+                }
             }
         }
         validateDates();
     }
 
     function handleEndDateChange(event: Event) {
+        formStore.clearFieldError(`${name}_end`);
+        
         const input = (event.target as HTMLInputElement).value;
         if (!input && !required) {
-            bind_end_date = null;
+            end_date = null;
         } else {
-            bind_end_date = new Date(input);
+            const newDate = new Date(input);
+            if (!isNaN(newDate.getTime())) {
+                end_date = newDate;
+            }
         }
         validateDates();
     }
 
     // Initial validation
     $effect(() => {
-        if (bind_start_date || bind_end_date) {
-            validateDates();
-        }
+        validateDates();
     });
+
+    const startInputClasses = $derived(
+        $isStartError ? 'bg-red-300/50 border-red-500 ring-red-500 outline outline-2 outline-red-500' :
+        showWarning ? 'border-amber-500 focus:border-amber-500 focus:ring-amber-500' :
+                     'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
+    );
+
+    const endInputClasses = $derived(
+        $isEndError ? 'bg-red-300/50 border-red-500 ring-red-500 outline outline-2 outline-red-500' :
+        showWarning ? 'border-amber-500 focus:border-amber-500 focus:ring-amber-500' :
+                     'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
+    );
 </script>
 
-<FormField {name} {label} {required} {error}>
+<FormField {name} {label} {required}>
     <div class="grid grid-cols-2 gap-4">
         <input
             type="date"
             name={`${name}_start`}
-            value={formatDate(bind_start_date)}
+            value={formatDate(start_date)}
             min={min_date ? formatDate(min_date) : undefined}
             max={max_date ? formatDate(max_date) : undefined}
             {required}
             onchange={handleStartDateChange}
-            class="block w-full rounded-md border-gray-300 shadow-sm
-                   focus:border-indigo-500 focus:ring-indigo-500"
+            class="block w-full rounded-md shadow-sm {startInputClasses}"
+            title={tooltip ?? undefined}
         />
         <input
             type="date"
             name={`${name}_end`}
-            value={formatDate(bind_end_date)}
-            min={bind_start_date ? formatDate(bind_start_date) : undefined}
+            value={formatDate(end_date)}
+            min={start_date ? formatDate(start_date) : min_date ? formatDate(min_date) : undefined}
             max={max_date ? formatDate(max_date) : undefined}
             {required}
             onchange={handleEndDateChange}
-            class="block w-full rounded-md border-gray-300 shadow-sm
-                   focus:border-indigo-500 focus:ring-indigo-500"
+            class="block w-full rounded-md shadow-sm {endInputClasses}"
+            title={tooltip ?? undefined}
         />
     </div>
 </FormField>
