@@ -1,6 +1,6 @@
 // src/lib/stores/form-store.ts
 import { writable, get } from 'svelte/store';
-import type { FormStore, FormFieldState } from "$lib/types.js";
+import type { FormStore, FormFieldState, NumRange } from "$lib/types.js";
 
 export function createFormStore(): FormStore {
     const fieldStates = writable<Record<string, FormFieldState>>({});
@@ -19,15 +19,46 @@ export function createFormStore(): FormStore {
         }));
     }
 
-    function validateField(name: string, value: any, validator?: RegExp) {
-        const isEmpty = !value || (typeof value === 'string' && !value.trim());
+    function valueIsEmpty(value: any) {
+        if (value === null || value === undefined) return true;
+        if (typeof value === 'string' && !value.trim()) return true;
+        if (Array.isArray(value) && value.length === 0) return true;
+        return false;
+    }
+
+    function validateField(name: string, value: any, validator?: RegExp | NumRange) {
+        const states = get(fieldStates);
+        const field = states[name];
+        
+        // Determine if value should be considered empty based on type
+        let isEmpty: boolean;
+        if (typeof value === 'boolean') {
+            // For checkbox/consent fields, only consider it empty if it's required AND false
+            isEmpty = field.isRequired ? !value : false;
+        } else {
+            isEmpty = valueIsEmpty(value);
+        }
+    
         const hasValidator = !!validator;
         let validatorPassed = null;
-
+    
         if (!isEmpty && hasValidator && validator) {
-            validatorPassed = validator.test(value);
+            if (validator instanceof RegExp) {
+                validatorPassed = validator.test(value);
+            }
+            else if (validator &&
+                     validator.min !== undefined &&
+                     validator.max !== undefined) {
+                validatorPassed = true;
+                if (validator.min !== null && value < validator.min) {
+                    validatorPassed = false;
+                }
+                if (validator.max !== null && value > validator.max) {
+                    validatorPassed = false;
+                }
+            }
         }
-
+    
         fieldStates.update(states => ({
             ...states,
             [name]: {
@@ -83,7 +114,7 @@ export function createFormStore(): FormStore {
         registerField,
         validateField,
         handleSubmit,
-        isFieldInError,    // Add to return
-        clearFieldError    // Add to return
+        isFieldInError,
+        clearFieldError
     };
 }

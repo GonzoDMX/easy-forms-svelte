@@ -5,6 +5,7 @@ const DEFAULT_COUNTRIES: Record<string, string> = {
   US: "United States",
   CA: "Canada",
   GB: "United Kingdom",
+  FR: "France"
 };
 
 export function getDefaultCountryData(): CountryData[] {

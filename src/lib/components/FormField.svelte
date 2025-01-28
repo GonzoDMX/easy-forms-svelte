@@ -5,14 +5,8 @@
         name,
         label,
         required = false,
-        error = null,
         children
     } : FormFieldProps = $props();
-
-    // Debug props
-    $effect(() => {
-        console.log(`FormField ${name} props updated:`, { error });
-    });
 </script>
 
 <div class="form-field w-full">
@@ -25,7 +19,4 @@
     <div class="mt-1">
         {@render children()}
     </div>
-    {#if error}
-        <p class="mt-1 text-sm text-red-600">{error}</p>
-    {/if}
 </div>

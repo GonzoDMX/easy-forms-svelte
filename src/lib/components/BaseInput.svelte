@@ -1,32 +1,26 @@
-<!-- src/lib/components/MultilineTextInput.svelte -->
+<!-- src/lib/components/EmailInput.svelte -->
 <script lang="ts">
     import { getContext } from 'svelte';
-    import type { TextAreaProps, FormStore } from '$lib/types.js';
+    import type { BaseInputProps, FormStore } from '$lib/types.js';
     import FormField from '$lib/components/FormField.svelte';
 
-    let {
+    let { 
         name,
         label,
+        type='text',
         required = false,
         placeholder = '',
         value = $bindable(''),
+        autocomplete='off',
         validator,
-        autocomplete = 'off',
-        size = 'medium',
-        resize = false,
         tooltip
-    } : TextAreaProps = $props();
+    } : BaseInputProps = $props();
 
     const formStore = getContext<FormStore>('formStore');
     formStore.registerField(name, required);
 
     let showWarning = $state(false);
     const isError = formStore.isFieldInError(name);
-    let textarea: HTMLTextAreaElement;
-
-    // DEFAULT_HEIGHT is 72 (3L) for 'small', 120 (5L) for 'medium', and 160 (8L) for 'large'
-    const DEFAULT_HEIGHT = size === 'small' ? 72 : size === 'medium' ? 120 : 168;
-    const MAX_HEIGHT = DEFAULT_HEIGHT * 2;
 
     function validateInput() {
         const isEmpty = !value || value.trim() === '';
@@ -53,18 +47,16 @@
 </script>
 
 <FormField {name} {label} {required}>
-    <textarea
+    <input
         id={name}
         {name}
+        type={type}
         {placeholder}
-        {autocomplete}
+        autocomplete={autocomplete}
         {required}
         bind:value={value}
-        bind:this={textarea}
         oninput={handleInput}
-        style="min-height: {DEFAULT_HEIGHT}px; {resize ? `max-height: ${MAX_HEIGHT}px;` : 'height: ${DEFAULT_HEIGHT}px;'}"
-        class="block w-full rounded-md shadow-sm {inputClasses}
-               {resize ? 'resize-y' : 'resize-none'}"
+        class="block w-full rounded-md shadow-sm {inputClasses}"
         title={tooltip ?? undefined}
-    ></textarea>
+    />
 </FormField>

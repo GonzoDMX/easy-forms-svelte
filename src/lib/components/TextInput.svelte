@@ -1,55 +1,28 @@
 <!-- src/lib/components/TextInput.svelte -->
 <script lang="ts">
     import type { TextInputProps } from '$lib/types.js';
-    import FormField from '$lib/components/FormField.svelte';
+    import BaseInput from '$lib/components/BaseInput.svelte';
 
     let { 
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
         placeholder = '',
         value = $bindable(''),
         validator,
-        autocomplete = 'off'
+        autocomplete = 'off',
+        tooltip
     } : TextInputProps = $props();
-
-    let error = $state('');
-
-    let warn = $state(false);
-
-    function validate(value: string): void {
-        if (required && !value.trim()) {
-            error = error_msg;
-            return;
-        }
-        if (validator && !validator.test(value)) {
-            warn = true;
-            return;
-        }
-        warn = false;
-        error = '';
-    }
-
-    // Initial validation
-    $effect(() => {
-        if (value) {
-            validate(value);
-        }
-    });
 </script>
 
-<FormField {name} {label} {required} {error}>
-    <input
-        id={name}
-        {name}
-        type='text'
-        {placeholder}
-        {autocomplete}
-        {required}
-        bind:value={value}
-        oninput={() => validate(value)}
-        class="block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500"
-    />
-</FormField>
+<BaseInput
+    name={name}
+    label={label}
+    type='text'
+    required={required}
+    placeholder={placeholder}
+    bind:value={value}
+    autocomplete={autocomplete}
+    validator={validator}
+    tooltip={tooltip}
+/>

@@ -11,9 +11,11 @@ export interface FormFieldState {
     validatorPassed: boolean | null;
 }
 
+export type NumRange = { min?: number; max?: number };
+
 export interface FormStore {
     registerField: (name: string, required: boolean) => void;
-    validateField: (name: string, value: any, validator?: RegExp) => void;
+    validateField: (name: string, value: any, validator?: RegExp | NumRange) => void;
     handleSubmit: () => { 
         isValid: boolean;
         errors: Array<{ 
@@ -56,8 +58,20 @@ type BaseProps = {
     name: string;           // Unique identifier
     label: string;          // Displayed label text
     required?: boolean;     // Is this field required to submit form?
-    error_msg?: string;     // Error message to display
-    tooltip?: string | null; // Tooltip text
+    tooltip?: string;       // Tooltip text
+}
+
+export type PasswordProps = {
+    name: string;           // Unique identifier
+    label: string;          // Displayed label text
+    placeholder?: string;   // Placeholder text
+    value?: string;         // Bindable value
+    tooltip?: string;       // Tooltip text
+}
+
+export type CountryProps = BaseProps & {
+    placeholder?: string;   // Placeholder text
+    value?: string;         // Bindable value
 }
 
 // Text Input Types ---------------- //
@@ -68,6 +82,11 @@ export type InputProps = BaseProps & {
                             // Setting this will override default validation
 };
 
+export type BaseInputProps = InputProps & {
+    type: 'text' | 'email' | 'password' | 'search' | 'url' | 'tel';
+    autocomplete?: AutocompleteType;    // HTML autocomplete attribute
+};
+
 export type TextInputProps = InputProps & {
     autocomplete?: AutocompleteType;    // HTML autocomplete attribute
 };
@@ -75,6 +94,7 @@ export type TextInputProps = InputProps & {
 // TODO Simplify height parameters
 export type TextAreaProps =  InputProps & {
     autocomplete?: 'off' | 'on';    // Enable or disable autocomplete
+    size?: 'small' | 'medium' | 'large'; // Textarea height
     resize?: boolean;        // Textarea height
 };
 // ---------------------------- //
@@ -85,7 +105,7 @@ export type NumberInputProps = BaseProps & {
     prefix?: string;        // Add a prefix symbol (e.g. $, £, €)
     suffix?: string;        // Add a suffix symbol (e.g. %)
     precision?: number;     // Number of decimal places
-    steps?: number;         // Incremental steps
+    step?: number;          // Incremental step
     value?: number | null;  // Bindable value
     max?: number;           // Maximum value permitted
     min?: number;           // Minimum value permitted
@@ -118,6 +138,7 @@ export type ConsentCheckProps = {
     required?: boolean;     // Is this field required to submit form?
     text: string;           // Displayed text
     checked: boolean;       // Bindable 'checked' boolean value
+    tooltip?: string;       // Tooltip text
 };
 
 export type OptionPair = {
@@ -140,14 +161,14 @@ export type CheckboxGroupProps = {
 
 // Dropdown Input Types ---------------- //
 export type DropdownSelectProps = {
-    name: string;               // Unique identifier
-    label: string;              // Displayed label text
-    required?: boolean;         // Is this field required to submit form?
-    error_msg?: string;         // Error message to display
-    options: SelectOptions;     // Array of options (simple strings or value/label pairs)
-    value: string;              // Bindable value
-    selected_value?: string;    // Default selected value
-                                // If 'selected_value' is provided it overrides placeholder 
-    placeholder?: string;       // Placeholder text
+    name: string;                   // Unique identifier
+    label: string;                  // Displayed label text
+    required?: boolean;             // Is this field required to submit form?
+    options: SelectOptions;         // Array of options (simple strings or value/label pairs)
+    value: string;                  // Bindable value
+    selected_value?: string | null; // Default selected value
+                                    // If 'selected_value' is provided it overrides placeholder 
+    placeholder?: string | null;    // Placeholder text
+    tooltip?: string;               // Tooltip text
 };
 // ---------------------------- //

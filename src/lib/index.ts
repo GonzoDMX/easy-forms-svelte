@@ -13,5 +13,6 @@ export { default as DateInput } from '$lib/components/DateInput.svelte';
 export { default as DateRangeInput } from '$lib/components/DateRangeInput.svelte';
 export { default as ConsentCheckbox } from '$lib/components/ConsentCheckbox.svelte';
 export { default as CheckboxGroup } from '$lib/components/CheckboxGroup.svelte';
+export { default as DropdownClassic } from '$lib/components/DropdownClassic.svelte';
 export { default as DropdownSelect } from '$lib/components/DropdownSelect.svelte';
 export type * from '$lib/types.js';

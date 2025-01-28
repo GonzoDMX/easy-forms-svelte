@@ -1,54 +1,27 @@
 <!-- src/lib/components/UrlInput.svelte -->
 <script lang="ts">
     import type { InputProps } from '$lib/types.js';
-    import FormField from '$lib/components/FormField.svelte';
+    import BaseInput from '$lib/components/BaseInput.svelte';
 
     let { 
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
         placeholder = '',
         value = $bindable(''),
-        validator = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
+        validator = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
+        tooltip = 'Please enter a valid URL (e.g., https://example.com)',
     } : InputProps = $props();
-
-    let error = $state('');
-    
-    let warn = $state(false);
-
-    function validate(value: string): void {
-        if (required && !value.trim()) {
-            error = error_msg;
-            return;
-        }
-        if (validator && !validator.test(value)) {
-            warn = true;
-            return;
-        }
-        error = '';
-        warn = false;
-    }
-
-    // Initial validation
-    $effect(() => {
-        if (value) {
-            validate(value);
-        }
-    });
 </script>
 
-<FormField {name} {label} {required} {error}>
-    <input
-        id={name}
-        {name}
-        type='url'
-        {placeholder}
-        autocomplete='url'
-        {required}
-        bind:value={value}
-        oninput={() => validate(value)}
-        class="block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500"
-    />
-</FormField>
+<BaseInput
+    name={name}
+    label={label}
+    type='url'
+    required={required}
+    placeholder={placeholder}
+    bind:value={value}
+    autocomplete='url'
+    validator={validator}
+    tooltip={tooltip}
+/>

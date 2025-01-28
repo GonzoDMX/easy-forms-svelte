@@ -1,53 +1,27 @@
 <!-- src/lib/components/TelInput.svelte -->
 <script lang="ts">
     import type { InputProps } from '$lib/types.js';
-    import FormField from '$lib/components/FormField.svelte';
+    import BaseInput from '$lib/components/BaseInput.svelte';
 
-    let { 
+    let {
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
         placeholder = '',
         value = $bindable(''),
-        validator = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/
+        validator = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+        tooltip = 'Please enter a valid phone number (e.g., +1 (555) 555-5555)'
     } : InputProps = $props();
-
-    let error = $state('');
-    let warn = $state(false);
-
-    function validate(value: string): void {
-        if (required && !value.trim()) {
-            error = error_msg;
-            return;
-        }
-        if (validator && !validator.test(value)) {
-            warn = true;
-            return;
-        }
-        warn = false;
-        error = '';
-    }
-
-    // Initial validation
-    $effect(() => {
-        if (value) {
-            validate(value);
-        }
-    });
 </script>
 
-<FormField {name} {label} {required} {error}>
-    <input
-        id={name}
-        {name}
-        type='tel'
-        {placeholder}
-        autocomplete='tel'
-        {required}
-        bind:value={value}
-        oninput={() => validate(value)}
-        class="block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500"
-    />
-</FormField>
+<BaseInput
+    name={name}
+    label={label}
+    type='tel'
+    required={required}
+    placeholder={placeholder}
+    bind:value={value}
+    autocomplete='tel'
+    validator={validator}
+    tooltip={tooltip}
+/>

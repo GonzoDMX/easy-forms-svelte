@@ -1,6 +1,7 @@
 <!-- src/lib/components/CountryInput.svelte -->
 <script lang="ts">
-    import type { InputProps } from '$lib/types.js';
+    import { getContext } from 'svelte';
+    import type { CountryProps, FormStore } from '$lib/types.js';
     import type { CountryData } from '$lib/utils/country-types.js';
     import FormField from '$lib/components/FormField.svelte';
     import { countryUtils } from '$lib/utils/country.js';
@@ -9,34 +10,22 @@
         name,
         label,
         required = false,
-        error_msg = 'This field is required',
         placeholder = '',
         value = $bindable(''),
-        validator
-    } : InputProps = $props();
+        tooltip = 'Please enter a country name'
+    } : CountryProps = $props();
+
+    // RegEx patter for two-letter country codes
+    const validator = /^[A-Za-z]{2}$/;
+
+    const formStore = getContext<FormStore>('formStore');
+    formStore.registerField(name, required);
 
     let userLanguage = countryUtils.getLocale();
     let countryOptions = $state<CountryData[]>([]);
     let allCountryOptions = countryUtils.getCountryData(userLanguage);
-    let error = $state('');
-    let warn = $state(false);
-    
-    function validate(val: string): void {
-        if (required && !value.trim()) {
-            error = error_msg;
-            return;
-        }
-        if (validator && !validator.test(value)) {
-            warn = true;
-            return;
-        }
-        warn = false;
-        error = '';
-    }
-
-    $effect(() => {
-        if (value) validate(value);
-    });
+    let showWarning = $state(false);
+    const isError = formStore.isFieldInError(name);
 
     function handleCountryInput(event: Event) {
         const input = (event.target as HTMLInputElement).value.trim();
@@ -47,20 +36,40 @@
             : [];
 
         value = countryUtils.standardizeCountry(input, userLanguage) ?? '';
+
+        formStore.clearFieldError(name);
+        validateInput();
     }
+
+    function validateInput() {
+        const isEmpty = !value || value.trim() === '';
+        showWarning = !isEmpty && !validator.test(value);
+        formStore.validateField(name, value, validator);
+    }
+
+    $effect(() => {
+        validateInput();
+    });
+
+    const inputClasses = $derived(
+        $isError ? 'bg-red-300/50 border-red-500 ring-red-500 outline outline-2 outline-red-500' :
+        showWarning ? 'border-gray-300 focus:border-amber-300 focus:ring-amber-300' :
+                     'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'
+    );
 </script>
 
-<FormField {name} {label} {required} {error}>
+<FormField {name} {label} {required}>
     <input
         list="countries"
         id={name}
         {name}
+        type="text"
         {placeholder}
         autocomplete="off"
         {required}
         oninput={handleCountryInput}
-        class="block w-full rounded-md border-gray-300 shadow-sm 
-            focus:border-indigo-500 focus:ring-indigo-500"
+        class="block w-full rounded-md shadow-sm {inputClasses}"
+        title={tooltip ?? undefined}
     />
     <datalist id="countries">
         {#each countryOptions as { name }}

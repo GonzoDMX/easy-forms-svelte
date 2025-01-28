@@ -26,6 +26,25 @@
       'other'
     ];
   
+    const pros = [
+      {
+        value: 'teacher',
+        label: 'Teacher'
+      },
+      {
+        value: 'professor',
+        label: 'Professor'
+      },
+      {
+        value: 'researcher',
+        label: 'Researcher'
+      },
+      {
+        value: 'other',
+        label: 'Other'
+      }
+    ]
+
     // Sample tools for checkbox group
     const tools = [
       'Tool 1',
@@ -83,7 +102,7 @@
             name="profession"
             label="Profession"
             bind:value={formData.profession}
-            options={professions}
+            options={pros}
             required
           />
   
@@ -92,17 +111,19 @@
             label="Years of Experience"
             bind:value={formData.years_experience}
             min={0}
-            max={50}
+            max={100}
             required
+            tooltip="Number of years of professional experience"
           />
         </FormRow>
-  
+
         <CheckboxGroup
           name="toolsUsed"
           label="Tools Used"
           options={tools}
           bind:group={formData.tools_used}
-          columns={2}
+          columns={4}
+          required
         />
   
         <MultilineTextInput
