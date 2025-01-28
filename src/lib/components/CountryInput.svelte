@@ -27,6 +27,7 @@
     let showWarning = $state(false);
     const isError = formStore.isFieldInError(name);
 
+    $inspect(allCountryOptions);
     function handleCountryInput(event: Event) {
         const input = (event.target as HTMLInputElement).value.trim();
         
@@ -78,3 +79,4 @@
     </datalist>
     <input type="hidden" bind:value={value} />
 </FormField>
+

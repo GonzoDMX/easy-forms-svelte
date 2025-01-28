@@ -15,4 +15,5 @@ export { default as ConsentCheckbox } from '$lib/components/ConsentCheckbox.svel
 export { default as CheckboxGroup } from '$lib/components/CheckboxGroup.svelte';
 export { default as DropdownClassic } from '$lib/components/DropdownClassic.svelte';
 export { default as DropdownSelect } from '$lib/components/DropdownSelect.svelte';
+export { default as NewCountry } from '$lib/components/NewCountry.svelte';
 export type * from '$lib/types.js';
