@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Form, FormRow, TextInput, EmailInput, CountryInput, 
              UrlInput, DropdownSelect, NumberInput, CheckboxGroup, 
-             MultilineTextInput, ConsentCheckbox, NewCountry } from '$lib/index.js';
+             MultilineTextInput, ConsentCheckbox } from '$lib/index.js';
     
     // Sample form data for testing
     let formData = {
@@ -90,7 +90,7 @@
           required
         />
   
-        <NewCountry
+        <CountryInput
           name="newCountry"
           label="New Country"
           bind:value={formData.country}
