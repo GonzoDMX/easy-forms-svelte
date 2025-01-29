@@ -9,7 +9,8 @@
         required = false,
         placeholder = '',
         value = $bindable(''),
-        validator = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
+        validator = /^(?:https?:\/\/)?(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:\/[-a-zA-Z0-9()@:%_\+.~#=]*)*$/,
+        // linkedin_url = /^(?:https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9._-]{5,30}\/?$/,
         tooltip = 'Please enter a valid URL (e.g., https://example.com)',
     } : InputProps = $props();
 </script>
