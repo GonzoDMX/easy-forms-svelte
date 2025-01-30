@@ -1,29 +1,31 @@
-<!-- src/lib/components/CountryInput.svelte -->
+<!-- src/lib/components/DropdownSelect.svelte -->
 <script lang="ts">
     import { getContext } from 'svelte';
-    import type { CountryProps, FormStore } from '$lib/types.js';
-    import type { CountryData } from '$lib/utils/country-types.js';
+    import type { DropdownInputProps, FormStore, OptionPair } from '$lib/types.js';
     import FormField from '$lib/components/FormField.svelte';
-    import { countryUtils } from '$lib/utils/country.js';
 
     let { 
         name,
         label,
         required = false,
+        list_only = true,
         placeholder = '',
         value = $bindable(''),
-        tooltip = 'Please enter a country name'
-    } : CountryProps = $props();
-
-    // RegEx pattern for two-letter country codes (for form validation)
-    const validator = /^[A-Za-z]{2}$/;
+        tooltip = '',
+        validator,
+        options,
+        autocomplete = 'off'
+    } : DropdownInputProps = $props();
 
     const formStore = getContext<FormStore>('formStore');
     formStore.registerField(name, required);
 
-    let userLanguage = countryUtils.getLocale();
-    let countryOptions = $state<CountryData[]>([]);
-    let allCountryOptions = countryUtils.getCountryData(userLanguage);
+    // Convert options to normalized format
+    const normalizedOptions = $state(options.map(opt => 
+        typeof opt === 'string' ? { value: opt, label: opt } : opt
+    ));
+
+    let filteredOptions = $state<OptionPair[]>([]);
     let showWarning = $state(false);
     let isOpen = $state(false);
     let inputValue = $state('');
@@ -33,46 +35,54 @@
         // Show dropdown if we have input
         isOpen = input.length >= 1;
         
-        // Filter and sort country options
         if (input.length >= 1) {
             const lowercaseInput = input.toLowerCase();
             
-            // First filter to get all matching countries
-            const filtered = allCountryOptions.filter(({ name }) => 
-                name.toLowerCase().includes(lowercaseInput)
+            // Filter options that match the input
+            const filtered = normalizedOptions.filter(({ label }) => 
+                label.toLowerCase().includes(lowercaseInput)
             );
             
-            // Then sort them to prioritize countries that start with the input
-            countryOptions = filtered.sort((a, b) => {
-                const aStartsWith = a.name.toLowerCase().startsWith(lowercaseInput);
-                const bStartsWith = b.name.toLowerCase().startsWith(lowercaseInput);
+            // Sort to prioritize options that start with the input
+            filteredOptions = filtered.sort((a, b) => {
+                const aStartsWith = a.label.toLowerCase().startsWith(lowercaseInput);
+                const bStartsWith = b.label.toLowerCase().startsWith(lowercaseInput);
                 
                 if (aStartsWith && !bStartsWith) return -1;
                 if (!aStartsWith && bStartsWith) return 1;
-                return a.name.localeCompare(b.name);
+                return a.label.localeCompare(b.label);
             });
         } else {
-            countryOptions = [];
+            filteredOptions = [];
         }
 
-        // Check if the current input exactly matches a country name
-        const matchingCountry = allCountryOptions.find(
-            country => country.name.toLowerCase() === input.toLowerCase()
-        );
-
-        if (matchingCountry) {
-            // If we found an exact match, treat it like a selection
-            handleSelection(matchingCountry);
+        // Handle validation
+        if (list_only) {
+            // If list_only is true, input must match an option exactly
+            const matchingOption = normalizedOptions.find(
+                opt => opt.label.toLowerCase() === input.toLowerCase()
+            );
+            
+            if (matchingOption) {
+                handleSelection(matchingOption);
+            } else {
+                showWarning = input.length > 0;
+                if (!input) {
+                    value = '';
+                    formStore.clearFieldError(name);
+                    validateInput();
+                }
+            }
         } else {
-            // Show warning if we have input but it doesn't match a country name
-            showWarning = input.length > 0 && !matchingCountry;
-
-            // Only clear validation state if input is empty
+            // If list_only is false, just validate against the validator if provided
+            showWarning = false;
             if (!input) {
                 value = '';
-                formStore.clearFieldError(name);
-                validateInput();
+            } else {
+                value = input;
             }
+            formStore.clearFieldError(name);
+            validateInput();
         }
     }
 
@@ -83,7 +93,6 @@
     }
 
     function handleAutoFill() {
-        // Check if the input has been autofilled
         requestAnimationFrame(() => {
             const input = (document.getElementById(name) as HTMLInputElement)?.value;
             if (input && input !== inputValue) {
@@ -93,9 +102,9 @@
         });
     }
 
-    function handleSelection(country: CountryData) {
-        inputValue = country.name;
-        value = country.code;
+    function handleSelection(option: OptionPair) {
+        inputValue = option.label;
+        value = option.value;
         isOpen = false;
         showWarning = false;
         formStore.clearFieldError(name);
@@ -104,30 +113,29 @@
 
     function validateInput() {
         const isEmpty = !value || value.trim() === '';
-        // We let the form store handle the actual validation
+        if (validator) {
+            showWarning = !isEmpty && !validator.test(value);
+        }
         formStore.validateField(name, value, validator);
     }
 
     function handleBlur() {
-        // Give time for click events to register before closing
         setTimeout(() => {
             isOpen = false;
             
-            // If we have a valid country code, ensure the display shows the correct name
-            if (value) {
-                const country = allCountryOptions.find(c => c.code === value);
-                if (country && country.name !== inputValue) {
-                    inputValue = country.name;
+            if (list_only) {
+                // If list_only, ensure display shows correct label for selected value
+                const option = normalizedOptions.find(opt => opt.value === value);
+                if (option && option.label !== inputValue) {
+                    inputValue = option.label;
                 }
+                
+                // Show warning if input doesn't match an option
+                const matchingOption = normalizedOptions.find(
+                    opt => opt.label.toLowerCase() === inputValue.toLowerCase()
+                );
+                showWarning = inputValue.length > 0 && !matchingOption;
             }
-
-            // Check if current input matches a country name
-            const matchingCountry = allCountryOptions.find(
-                country => country.name.toLowerCase() === inputValue.toLowerCase()
-            );
-            
-            // Show warning if we have input but it doesn't match a country name
-            showWarning = inputValue.length > 0 && !matchingCountry;
             
             validateInput();
         }, 200);
@@ -140,9 +148,9 @@
     // Initialize inputValue if we have a value
     $effect(() => {
         if (value) {
-            const country = allCountryOptions.find(c => c.code === value);
-            if (country) {
-                inputValue = country.name;
+            const option = normalizedOptions.find(opt => opt.value === value);
+            if (option) {
+                inputValue = option.label;
                 showWarning = false;
             }
         }
@@ -160,8 +168,8 @@
         <input
             id={name}
             type="text"
-            autocomplete="off"
-            placeholder={placeholder}
+            {autocomplete}
+            {placeholder}
             bind:value={inputValue}
             oninput={handleInput}
             onblur={handleBlur}
@@ -171,19 +179,19 @@
         />
         
         <!-- Dropdown list -->
-        {#if isOpen && countryOptions.length > 0}
+        {#if isOpen && filteredOptions.length > 0}
             <ul
                 class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
             >
-                {#each countryOptions as country}
-                    <li role="option" aria-selected={country.name === value}>
+                {#each filteredOptions as option}
+                    <li role="option" aria-selected={option.value === value}>
                         <button
                             type="button"
                             class="block w-full text-left px-3 py-2 hover:bg-indigo-500 hover:text-white cursor-pointer"
-                            onclick={() => handleSelection(country)}
-                            onkeydown={(e) => e.key === 'Enter' && handleSelection(country)}
+                            onclick={() => handleSelection(option)}
+                            onkeydown={(e) => e.key === 'Enter' && handleSelection(option)}
                         >
-                            {country.name}
+                            {option.label}
                         </button>
                     </li>
                 {/each}

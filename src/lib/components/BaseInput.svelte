@@ -1,4 +1,4 @@
-<!-- src/lib/components/EmailInput.svelte -->
+<!-- src/lib/components/BaseInput.svelte -->
 <script lang="ts">
     import { getContext } from 'svelte';
     import type { BaseInputProps, FormStore } from '$lib/types.js';

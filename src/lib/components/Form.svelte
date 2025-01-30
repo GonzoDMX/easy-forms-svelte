@@ -3,14 +3,13 @@
     import { setContext } from 'svelte';
     import { createFormStore } from '$lib/stores/form-store.js';
     import type { FormProps } from '$lib/types.js';
-    import Toast from './Toast.svelte'; // We'll create this
 
     let {
         title,
         description,
         style = 'default',
         submit_label = 'Submit',
-        error_message = 'Please complete all required fields correctly',
+        error_message = 'Please complete all required fields',
         on_submit,
         is_submitting = false,
         children

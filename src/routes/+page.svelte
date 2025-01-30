@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Form, FormRow, TextInput, EmailInput, CountryInput, 
-             UrlInput, DropdownSelect, NumberInput, CheckboxGroup, 
+             DropdownInput, DropdownSelect, NumberInput, CheckboxGroup, 
              MultilineTextInput, ConsentCheckbox } from '$lib/index.js';
     
     // Sample form data for testing
@@ -83,22 +83,24 @@
           />
         </FormRow>
   
-        <EmailInput
-          name="email"
-          label="Email"
-          bind:value={formData.email}
-          required
-        />
-  
-        <CountryInput
-          name="newCountry"
-          label="New Country"
-          bind:value={formData.country}
-          required
-        />
+        <FormRow>
+          <EmailInput
+            name="email"
+            label="Email"
+            bind:value={formData.email}
+            required
+          />
+    
+          <CountryInput
+            name="country"
+            label="Country"
+            bind:value={formData.country}
+            required
+          />
+        </FormRow>
 
         <FormRow>
-          <DropdownSelect
+          <DropdownInput
             name="profession"
             label="Profession"
             bind:value={formData.profession}

@@ -3,6 +3,17 @@ import type { AutocompleteType } from '$lib/autocomplete-types.js'
 export type FormStyle = 'default' | 'compact' | 'bordered';
 import type { Readable } from 'svelte/store';
 
+// Utility Types
+export type OptionPair = {
+    value: string;
+    label: string;
+};
+
+export type SelectOptions = readonly (string | OptionPair)[] | (string | OptionPair)[];
+
+export type NumRange = { min?: number; max?: number };
+// ---------------------------- //
+
 export interface FormFieldState {
     name: string;
     isRequired: boolean;
@@ -10,8 +21,6 @@ export interface FormFieldState {
     hasValidator: boolean;
     validatorPassed: boolean | null;
 }
-
-export type NumRange = { min?: number; max?: number };
 
 export interface FormStore {
     registerField: (name: string, required: boolean) => void;
@@ -91,6 +100,12 @@ export type TextInputProps = InputProps & {
     autocomplete?: AutocompleteType;    // HTML autocomplete attribute
 };
 
+export type DropdownInputProps = InputProps & {
+    list_only?: boolean;    // Only allow input that matches an item in the options list
+    options: SelectOptions;
+    autocomplete?: AutocompleteType;    // HTML autocomplete attribute
+};
+
 // TODO Simplify height parameters
 export type TextAreaProps =  InputProps & {
     autocomplete?: 'off' | 'on';    // Enable or disable autocomplete
@@ -139,18 +154,10 @@ export type ConsentCheckProps = {
     tooltip?: string;       // Tooltip text
 };
 
-export type OptionPair = {
-    value: string;
-    label: string;
-};
-
-export type SelectOptions = readonly (string | OptionPair)[] | (string | OptionPair)[];
-
 export type CheckboxGroupProps = {
     name: string;               // Unique identifier
     label: string;              // Displayed label text
     required?: boolean;         // Is this field required to submit form?
-    error_msg?: string;         // Error message to display
     options: SelectOptions;     // Array of options (simple strings or value/label pairs)
     group: string[];            // Bindable array, gets populated with checked options
     columns?: 2 | 3 | 4;        // Number of columns to display, TODO maybe automate this

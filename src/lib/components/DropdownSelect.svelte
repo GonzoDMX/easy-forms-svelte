@@ -82,7 +82,8 @@
         <button
             id={name}
             type="button"
-            class="flex items-center justify-between text-left w-full rounded-md shadow-sm px-3 py-2 border cursor-pointer {inputClasses}
+            class="flex items-center min-h-[42px] justify-between text-left w-full
+                    rounded-md shadow-sm px-3 py-2 border cursor-pointer {inputClasses}
                     {value === '' ? 'text-gray-400' : 'text-black'}"
             aria-haspopup="listbox"
             aria-expanded={isOpen}
